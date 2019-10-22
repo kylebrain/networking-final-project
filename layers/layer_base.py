@@ -25,23 +25,23 @@ class LayerBase():
 
     def receive(self):
         while True:
-            msg = self.in_buffer.get()
             if self.above_layer is not None:
-                msg = self.process_receive(msg)
-                print("Layer %d receive: %d" % (self.layer_id, msg))
-                self.above_layer.in_buffer.put(msg)
-            else:
-                # highest layer
-                # handle logging
-                print(msg)
+                msg = self.in_buffer.get()
+                above_msgs = self.process_receive(msg)
+
+                for above_msg in above_msgs:
+                    print("Layer %d receive: %d" % (self.layer_id, above_msg))
+                    self.above_layer.in_buffer.put(above_msg)
 
     def send(self):
         while True:
             msg = self.out_buffer.get()
             if self.below_layer is not None:
-                msg = self.process_send(msg)
-                print("Layer %d send: %d" % (self.layer_id, msg))
-                self.below_layer.out_buffer.put(msg)
+                below_msgs = self.process_send(msg)
+
+                for below_msg in below_msgs:
+                    print("Layer %d send: %d" % (self.layer_id, below_msg))
+                    self.below_layer.out_buffer.put(below_msg)
             else:
                 # lowest layer
                 # ultimately transfer to the other physical device
