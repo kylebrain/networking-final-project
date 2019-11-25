@@ -7,8 +7,8 @@ class LayerBase():
         self.above_layer = above_layer
         self.layer_id = layer_id
 
-        self.in_buffer = Queue()
-        self.out_buffer = Queue()
+        self.receive_buffer = Queue()
+        self.send_buffer = Queue()
         self.below_layer = None
 
         # TODO: have the factory set the below layer
@@ -26,26 +26,26 @@ class LayerBase():
     def receive(self):
         while True:
             if self.above_layer is not None:
-                msg = self.in_buffer.get()
+                msg = self.receive_buffer.get()
                 above_msgs = self.process_receive(msg)
 
                 for above_msg in above_msgs:
                     print("Layer %d receive: %d" % (self.layer_id, above_msg))
-                    self.above_layer.in_buffer.put(above_msg)
+                    self.above_layer.receive_buffer.put(above_msg)
 
     def send(self):
         while True:
-            msg = self.out_buffer.get()
+            msg = self.send_buffer.get()
             if self.below_layer is not None:
                 below_msgs = self.process_send(msg)
 
                 for below_msg in below_msgs:
                     print("Layer %d send: %d" % (self.layer_id, below_msg))
-                    self.below_layer.out_buffer.put(below_msg)
+                    self.below_layer.send_buffer.put(below_msg)
             else:
                 # lowest layer
                 # ultimately transfer to the other physical device
-                self.in_buffer.put(msg)
+                self.receive_buffer.put(msg)
 
     @abc.abstractmethod
     def process_receive(self, msg):
