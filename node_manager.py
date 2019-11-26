@@ -1,4 +1,5 @@
 import random
+import layers
 
 class NodeManager():
     """
@@ -20,7 +21,9 @@ class NodeManager():
     def CreateNetwork(self):
         """
         Creates a network from the parameters
+        Returns a list of the created nodes and an adjacency matrix of their connections
         """
+        nodes = []
         added_nodes = [[0, 0]]
         for toAdd in range(1, self.num_nodes):
             # Gauranteed to connect to at least one node
@@ -34,8 +37,12 @@ class NodeManager():
             self.adjacency_matrix[toAdd][neighbor] = 1
             self.adjacency_matrix[neighbor][toAdd] = 1
             added_nodes.append([toAdd, 1])
+            class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.ApplicationLayer]
+            args_list = [layers.LinkLayerArgs(), layers.NetworkingLayerArgs(), layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
+            layer_stack = layers.create_layers(class_list, args_list)
+            nodes.append(layer_stack)
 
-            # Try to connect to other nodes with probability sparcity
+            # Try to connect to other nodes with some probability
             toAdd_index = self.num_nodes
             for i in range(len(added_nodes)):
                 if toAdd == added_nodes[i][0]:
@@ -67,4 +74,4 @@ class NodeManager():
                     self.adjacency_matrix[neighbor][toAdd] = 1
                 otherNode_index += 1
                 length = len(added_nodes)
-        return self.adjacency_matrix
+        return [nodes, self.adjacency_matrix]
