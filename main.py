@@ -9,15 +9,15 @@ def main():
 
     layer_count = len(layer_stack)
 
-    # Add two 7's for the application layer to send
-    for _ in range(2):
-        layer_stack[layer_count - 1].send_buffer.put(7)
+    # Add two nums for the application layer to send
+    layer_stack[layer_count - 1].send_buffer.put(7)
+    layer_stack[layer_count - 1].send_buffer.put(2)
 
     # Currently link layer places its send buffer in the receive buffer in its transmit function
 
     # Block get the packets out of the application layer's receive buffer
     for _ in range(2):
-        msg = layer_stack[layer_count - 1].receive_buffer.get()
+        msg = layer_stack[layer_count - 1].host_buffer.get()
         print("Top layer found: %d" % (msg, ))
 
 

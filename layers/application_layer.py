@@ -5,4 +5,10 @@ class ApplicationLayerArgs(BaseLayerArgs):
     pass
 
 class ApplicationLayer(LayerBase):
-    pass
+    def __init__(self, layer_id, args):
+        super(ApplicationLayer, self).__init__(layer_id, args)
+        self.host_buffer = Queue()
+
+
+    def process_receive(self, msg):
+        self.host_buffer.put(msg)

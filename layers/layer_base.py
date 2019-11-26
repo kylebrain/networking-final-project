@@ -40,55 +40,38 @@ class LayerBase():
 
     def receive(self):
         """
-        When a packet is found in the receive buffer, the layer processes and pushes it to the above layer
-        If there is no above_layer, packets will just sit in the receive buffer
+        When a packet is found in the receive buffer, the layer processes it
         """
         while True:
-            if self.above_layer is not None:
-                msg = self.receive_buffer.get()
-                above_msgs = self.process_receive(msg)
-
-                for above_msg in above_msgs:
-                    print("Layer %d receive: %d" % (self.layer_id, above_msg))
-                    self.above_layer.receive_buffer.put(above_msg)
+            msg = self.receive_buffer.get()
+            print("Layer %d receive: %d" % (self.layer_id, msg))
+            self.process_receive(msg)
 
     def send(self):
         """
-        When a packet is found in the sent buffer, the layer processes and pushes it to the below layer
-        If there is below_layer, packets are transmitted according the the transmit function
+        When a packet is found in the sent buffer, the layer processes it
         """
         while True:
             msg = self.send_buffer.get()
-            if self.below_layer is not None:
-                below_msgs = self.process_send(msg)
-
-                for below_msg in below_msgs:
-                    print("Layer %d send: %d" % (self.layer_id, below_msg))
-                    self.below_layer.send_buffer.put(below_msg)
-            else:
-                print("Layer %d transmit: %d" % (self.layer_id, msg))
-                self.transmit(msg)
+            print("Layer %d send: %d" % (self.layer_id, msg))
+            self.process_send(msg)
 
     @abc.abstractmethod
     def process_receive(self, msg):
         """
         Processes msg which was retreived from the receive buffer
-        Returns a list of packets to send to the above layer
         """
-        return [msg, ]
+        if self.above_layer is not None:
+            self.above_layer.receive_buffer.put(msg)
+        else:
+            raise ValueError("Default process_receive called with no above layer")
 
     @abc.abstractmethod
     def process_send(self, msg):
         """
         Processes msg which was retreived from the send buffer
-        Returns a list of packets to send to the below layer
         """
-        return [msg, ]
-
-    @abc.abstractmethod
-    def transmit(self, msg):
-        """
-        Used by a tranmitting layer
-        Allowed to transfer a message from the send buffer to another node's receive buffer
-        """
-        pass
+        if self.below_layer is not None:
+            self.below_layer.send_buffer.put(msg)
+        else:
+            raise ValueError("Default process_send called with no below layer")

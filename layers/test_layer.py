@@ -26,23 +26,16 @@ class TestLayer(LayerBase):
 
     def process_receive(self, msg):
         """
-        Return a list of msgs, can return a list so a layer can wait to push multiple packets at a time
+        Only pushes the messages if there are two in the buffer
+        Used the super process_receive to forward to the above receive buffer
         """
-        self.buffer.append(args.receive_multiplier * msg)
+        self.buffer.append(self.args.receive_multiplier * msg)
         if len(self.buffer) == 2:
-            return [self.buffer.pop(0), self.buffer.pop(0)]
-        else:
-            return []
+            super(TestLayer, self).process_receive(self.buffer.pop(0))
+            super(TestLayer, self).process_receive(self.buffer.pop(0))
 
     def process_send(self, msg):
         """
-        Return a list of msgs, can return a list so a layer can wait to send multiple packets at a time
+        Used the super process_send to forward to below receive buffer
         """
-        return [args.send_decrementer - 1]
-
-    def transmit(self, msg):
-        """
-        Only needs to be defined for the lowest layer (below_layer is None)
-        Used to transfer data from a node's send_buffer to another node's receive_buffer
-        """
-        self.receive_buffer.put(msg)
+        super(TestLayer, self).process_send(msg - self.args.send_decrementer)

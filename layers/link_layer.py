@@ -5,5 +5,5 @@ class LinkLayerArgs(BaseLayerArgs):
     pass
 
 class LinkLayer(LayerBase):
-    def transmit(self, msg):
+    def process_send(self, msg):
         self.receive_buffer.put(msg)
