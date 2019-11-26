@@ -5,7 +5,7 @@ class NodeManager():
     """
     Creates a random network of nodes
     """
-    def __init__(self, num_nodes, sparcity, max_connections):
+    def __init__(self, num_nodes, sparcity, max_connections, router_ratio):
         """
         Arguments
             num_nodes - number of nodes in the network
@@ -14,9 +14,9 @@ class NodeManager():
         """
         self.num_nodes = num_nodes
         self.sparcity = sparcity
+        self.router_ratio = router_ratio
         self.max_connections = max_connections
         self.adjacency_matrix = [[0 for i in range(num_nodes)] for j in range(num_nodes)]
-        random.seed(2)
 
     def CreateNetwork(self):
         """
@@ -37,10 +37,18 @@ class NodeManager():
             self.adjacency_matrix[toAdd][neighbor] = 1
             self.adjacency_matrix[neighbor][toAdd] = 1
             added_nodes.append([toAdd, 1])
-            class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.ApplicationLayer]
-            args_list = [layers.LinkLayerArgs(), layers.NetworkingLayerArgs(), layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
-            layer_stack = layers.create_layers(class_list, args_list)
-            nodes.append(layer_stack)
+
+            # Chance to be a router or sensor application
+            if random.random() < self.router_ratio:
+                class_list = [layers.LinkLayer, layers.NetworkingLayer]
+                args_list = [layers.LinkLayerArgs(), layers.NetworkingLayerArgs()]
+                layer_stack = layers.create_layers(class_list, args_list)
+                nodes.append(layer_stack)
+            else:
+                class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.ApplicationLayer]
+                args_list = [layers.LinkLayerArgs(), layers.NetworkingLayerArgs(), layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
+                layer_stack = layers.create_layers(class_list, args_list)
+                nodes.append(layer_stack)
 
             # Try to connect to other nodes with some probability
             toAdd_index = self.num_nodes
