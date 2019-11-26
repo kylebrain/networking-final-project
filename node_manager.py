@@ -4,6 +4,7 @@ import layers
 class NodeData():
     def __init__(self, id, network, nodes):
         self.id = id
+        self.battery = 1.0
         self.network = network
         self.nodes = nodes
 
@@ -31,6 +32,14 @@ class NodeManager():
         """
         nodes = []
         added_nodes = [[0, 0]]
+
+        node_data = NodeData(0, self.adjacency_matrix, nodes)
+
+        first_class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.ApplicationLayer]
+        first_args_list = [layers.LinkLayerArgs(), layers.NetworkingLayerArgs(), layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
+        first_layer_stack = layers.create_layers(node_data, first_class_list, first_args_list)
+
+        nodes.append(first_layer_stack)
         for toAdd in range(1, self.num_nodes):
             # Gauranteed to connect to at least one node
             if len(added_nodes) == 0:
@@ -44,7 +53,7 @@ class NodeManager():
             self.adjacency_matrix[neighbor][toAdd] = 1
             added_nodes.append([toAdd, 1])
 
-            node_data = NodeData(toAdd - 1, self.adjacency_matrix, nodes)
+            node_data = NodeData(toAdd, self.adjacency_matrix, nodes)
 
             # Chance to be a router or sensor application
             if random.random() < self.router_ratio:
