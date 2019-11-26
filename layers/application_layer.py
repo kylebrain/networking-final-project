@@ -12,6 +12,7 @@ class ApplicationLayer(LayerBase):
 
 
     def process_receive(self, msg):
+        print("Node has battery: %f" % (self.node_data.battery,))
         self.host_buffer.put(msg)
 
 		def process_send(self, msg):
@@ -23,3 +24,4 @@ class ApplicationLayer(LayerBase):
 
 		def print_data(self):
 				print(self.host_buffer.get())
+
