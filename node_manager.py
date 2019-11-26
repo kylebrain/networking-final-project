@@ -1,6 +1,12 @@
 import random
 import layers
 
+class NodeData():
+    def __init__(self, id, network, nodes):
+        self.id = id
+        self.network = network
+        self.nodes = nodes
+
 class NodeManager():
     """
     Creates a random network of nodes
@@ -38,16 +44,18 @@ class NodeManager():
             self.adjacency_matrix[neighbor][toAdd] = 1
             added_nodes.append([toAdd, 1])
 
+            node_data = NodeData(toAdd - 1, self.adjacency_matrix, nodes)
+
             # Chance to be a router or sensor application
             if random.random() < self.router_ratio:
                 class_list = [layers.LinkLayer, layers.NetworkingLayer]
                 args_list = [layers.LinkLayerArgs(), layers.NetworkingLayerArgs()]
-                layer_stack = layers.create_layers(class_list, args_list)
+                layer_stack = layers.create_layers(node_data, class_list, args_list)
                 nodes.append(layer_stack)
             else:
                 class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.ApplicationLayer]
                 args_list = [layers.LinkLayerArgs(), layers.NetworkingLayerArgs(), layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
-                layer_stack = layers.create_layers(class_list, args_list)
+                layer_stack = layers.create_layers(node_data, class_list, args_list)
                 nodes.append(layer_stack)
 
             # Try to connect to other nodes with some probability
@@ -82,4 +90,4 @@ class NodeManager():
                     self.adjacency_matrix[neighbor][toAdd] = 1
                 otherNode_index += 1
                 length = len(added_nodes)
-        return [nodes, self.adjacency_matrix]
+        return nodes, self.adjacency_matrix

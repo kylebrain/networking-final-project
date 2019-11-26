@@ -5,8 +5,8 @@ class ApplicationLayerArgs(BaseLayerArgs):
     pass
 
 class ApplicationLayer(LayerBase):
-    def __init__(self, layer_id, args):
-        super(ApplicationLayer, self).__init__(layer_id, args)
+    def __init__(self, node_data, layer_id, args):
+        super(ApplicationLayer, self).__init__(node_data, layer_id, args)
         self.host_buffer = Queue()
 
 

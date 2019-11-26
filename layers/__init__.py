@@ -6,7 +6,7 @@ from .application_layer import ApplicationLayer, ApplicationLayerArgs
 
 from .test_layer import TestLayer, TestLayerArgs
 
-def create_layers(layer_classes, layer_args):
+def create_layers(node_data, layer_classes, layer_args):
     """
     Create the layers specified by the arguments
 
@@ -26,7 +26,7 @@ def create_layers(layer_classes, layer_args):
 
         if not isinstance(layer_arg, BaseLayerArgs):
             raise ValueError("Layer args class: %s does not inherent from BaseLayerArgs" % (type(layer_arg), ))
-        layer = layer_class(i, layer_arg)
+        layer = layer_class(node_data, i, layer_arg)
         if i > 0:
             layer.below_layer = layers[i-1]
             layers[i-1].above_layer = layer

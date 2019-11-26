@@ -14,7 +14,7 @@ class LayerBase():
     Processes each packet the layer sends and receives
     See test_layer.py for an example on how to create a layer
     """
-    def __init__(self, layer_id, args):
+    def __init__(self, node_data, layer_id, args):
         """
         Arguments
             layer_id - unique id of the layer
@@ -30,6 +30,8 @@ class LayerBase():
         # Type is BaseLayerArgs
         self.args = args
 
+        self.node_data = node_data
+
         receive_thread = Thread(target=self.receive)
         receive_thread.daemon = True
         send_thread = Thread(target=self.send)
@@ -44,7 +46,7 @@ class LayerBase():
         """
         while True:
             msg = self.receive_buffer.get()
-            print("Layer %d receive: %d" % (self.layer_id, msg))
+            print("Layer %d (id=%d) receive: %s" % (self.layer_id, self.node_data.id, msg))
             self.process_receive(msg)
 
     def send(self):
@@ -53,7 +55,7 @@ class LayerBase():
         """
         while True:
             msg = self.send_buffer.get()
-            print("Layer %d send: %d" % (self.layer_id, msg))
+            print("Layer %d (id=%d) send: %s" % (self.layer_id, self.node_data.id, msg))
             self.process_send(msg)
 
     @abc.abstractmethod
