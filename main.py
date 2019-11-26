@@ -1,7 +1,14 @@
 import layers
 import time
+from node_manager import NodeManager
+import numpy as np
 
 def main():
+    num_nodes = 30
+    nodeManager = NodeManager(num_nodes, 4 / num_nodes, 4)
+    network = nodeManager.CreateNetwork()
+    print(np.matrix(network))
+
 
     class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.ApplicationLayer]
     args_list = [layers.LinkLayerArgs(), layers.NetworkingLayerArgs(), layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
