@@ -21,11 +21,11 @@ class ApplicationLayer(LayerBase):
         super(ApplicationLayer, self).process_send(self.create_data())
 
     def create_data(self):
-            seed(1)
-			if self.msg_type == 0:
-            	return (9/5)*random()+32	# returns some random Fahrenheit value for DATA
-			else:
-				return 1	# sample num used for ACK
+        seed(1)
+        if self.msg_type == 0:
+            return (9/5)*random()+32	# returns some random Fahrenheit value for DATA
+        else:
+            return 1	# sample num used for ACK
 
     def print_data(self):
             print(self.host_buffer.get())
