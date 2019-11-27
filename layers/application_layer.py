@@ -9,7 +9,7 @@ class ApplicationLayer(LayerBase):
     def __init__(self, node_data, layer_id, args):
         super(ApplicationLayer, self).__init__(node_data, layer_id, args)
         self.host_buffer = Queue()
-	self.msg_type = 0	# 0 - send, 1 - ack... Assume every application starts at send
+		self.msg_type = 0	# 0 - send, 1 - ack... Assume every application starts at send
 
 
     def process_receive(self, msg):
@@ -18,7 +18,7 @@ class ApplicationLayer(LayerBase):
         self.host_buffer.put(msg)
 
     def process_send(self, msg):
-        super(ApplicationLayer, self).process_send(self.create_data())
+        super(ApplicationLayer, self).process_send(ApplicationPacket(self.create_data(), self.msg_type))
 
     def create_data(self):
         seed(1)
@@ -28,7 +28,7 @@ class ApplicationLayer(LayerBase):
             return 1	# sample num used for ACK
 
     def print_data(self):
-            print(self.host_buffer.get())
+        print(self.host_buffer.get())
 
     def check_type(self, msg):
 	    self.msg_type = msg.get_type
