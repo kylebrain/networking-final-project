@@ -15,13 +15,13 @@ class ApplicationLayer(LayerBase):
         print("Node has battery: %f" % (self.node_data.battery,))
         self.host_buffer.put(msg)
 
-		def process_send(self, msg):
-				super(ApplicationLayer, self).process_send(self.create_data())
+    def process_send(self, msg):
+        super(ApplicationLayer, self).process_send(self.create_data())
 
-		def create_data(self):
-				seed(1)
-				return (9/5)*random()+32	# returns some random Fahrenheit value for data
+    def create_data(self):
+            seed(1)
+            return (9/5)*random()+32	# returns some random Fahrenheit value for data
 
-		def print_data(self):
-				print(self.host_buffer.get())
+    def print_data(self):
+            print(self.host_buffer.get())
 
