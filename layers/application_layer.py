@@ -18,7 +18,7 @@ class ApplicationLayer(LayerBase):
         self.host_buffer.put(msg)
 
     def process_send(self, msg):
-        super(ApplicationLayer, self).process_send(ApplicationPacket( self.msg_type, self.create_data().msg_type))
+        super(ApplicationLayer, self).process_send(ApplicationPacket( self.msg_type, self.create_data()))
 
     def create_data(self):
         seed(1)
