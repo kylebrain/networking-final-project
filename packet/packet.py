@@ -1,17 +1,29 @@
 
 class Packet():
     def __init__(self):
+				self.app = None
         self.network = None
         self.link = None
 
     def __str__(self):
+		app_str = ""
+		if self,app is not None:
+			app_str = str(self.app)
         network_str = ""
         if self.network is not None:
             network_str = str(self.network)
         link_str = ""
         if self.link is not None:
             link_str = str(self.link)
-        return network_str + " & " + link_str
+        return app_str + " & " + network_str + " & " + link_str
+
+class AppPacket():
+	def __init__(self, type_id, msg):
+		self.type_id = type_id
+		self.msg = msg
+
+	def __str__(self):
+		return "App Msg - " + self.msg + ", Type ID: " + self.type_id
 
 class LinkPacket():
     def __init__(self, src_id, dest_id):
