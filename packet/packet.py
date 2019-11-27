@@ -22,8 +22,11 @@ class AppPacket():
 		self.type_id = type_id
 		self.msg = msg
 
-	def get_type(self)
+	def get_type(self):
 		return self.type_id
+
+	def get_msg(self):
+		return self.msg
 
 	def __str__(self):
 		return "App Msg - " + self.msg + ", Type ID: " + self.type_id
