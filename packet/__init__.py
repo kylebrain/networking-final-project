@@ -1,1 +1,1 @@
-from .packet import Packet, LinkPacket, NetworkingPacket
+from .packet import Packet, LinkPacket, NetworkingPacket, AppPacket

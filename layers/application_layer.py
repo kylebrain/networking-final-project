@@ -1,6 +1,7 @@
 from layers.layer_base import LayerBase, BaseLayerArgs
 from queue import Queue
 from random import seed, random
+import packet
 
 class ApplicationLayerArgs(BaseLayerArgs):
     pass
@@ -8,28 +9,34 @@ class ApplicationLayerArgs(BaseLayerArgs):
 class ApplicationLayer(LayerBase):
     def __init__(self, node_data, layer_id, args):
         super(ApplicationLayer, self).__init__(node_data, layer_id, args)
-        self.host_buffer = Queue()
-		self.msg_type = 0	# 0 - send, 1 - ack... Assume every application starts at send
+        self.host_buffer = []
 
+    def get_data(self, dest):
+        pckt = packet.Packet()
+        pckt.app = packet.AppPacket(self.node_data.id, dest, 0, 0)
+        self.send_buffer.put(pckt)
+        while not self.has_response(dest):
+            pass
+        return_msg = next(msg for msg in self.host_buffer)
+        self.host_buffer.remove(return_msg)
+        return return_msg.app.msg
+
+    def has_response(self, dest):
+        return dest in [msg.app.src_id for msg in self.host_buffer]
 
     def process_receive(self, msg):
-        print("Node has battery: %f" % (self.node_data.battery,))
-		self.check_type(msg)
-        self.host_buffer.put(msg)
+        if msg.app.type_id == 0:
+            pckt = packet.Packet()
+            pckt.app = packet.AppPacket(self.node_data.id, msg.app.src_id, 1, self.create_data())
+            self.send_buffer.put(pckt)
+        else:
+            self.host_buffer.append(msg)
+
 
     def process_send(self, msg):
-        super(ApplicationLayer, self).process_send(ApplicationPacket( self.msg_type, self.create_data()))
+        msg.network = packet.NetworkingPacket(self.node_data.id, msg.app.dest_id)
+        self.below_layer.send_buffer.put(msg)
 
     def create_data(self):
-        seed(1)
-        if self.msg_type == 0:
-            return (9/5)*random()+32	# returns some random Fahrenheit value for DATA
-        else:
-            return 1	# sample num used for ACK
-
-    def print_data(self):
-        print(self.host_buffer.get())
-
-    def check_type(self, msg):
-	    self.msg_type = msg.get_type
+        return (9/5)*random()+32
 

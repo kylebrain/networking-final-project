@@ -15,15 +15,9 @@ def main():
     app_layer_nodes = [(i, node) for i, node in enumerate(nodes) if len(node) == 4]
 
     for i, node in enumerate(app_layer_nodes):
-        cur_packet = packet.Packet()
-        cur_packet.network = packet.NetworkingPacket(node[0], app_layer_nodes[len(app_layer_nodes) - i - 1][0])
-        node[1][3].send_buffer.put(cur_packet)
-
-    for i in range(len(nodes)):
-        layer_count = len(nodes[i])
-        if layer_count == 4:
-            msg = nodes[i][layer_count - 1].host_buffer.get()
-            print("Top layer (id=%d) found: %s" % (i, msg, ))
+        dest = app_layer_nodes[len(app_layer_nodes) - i - 1][0]
+        data = node[1][3].get_data(dest)
+        print("App layer (id = %d) get request found data: %s" % (node[0], data))
 
 if __name__ == '__main__':
     main()
