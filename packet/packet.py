@@ -3,6 +3,9 @@ class Packet():
     def __init__(self):
         self.network = None
         self.link = None
+        self.payload = None
+        self.type = 0
+        self.time_stamp = 0
 
     def __str__(self):
         network_str = ""
