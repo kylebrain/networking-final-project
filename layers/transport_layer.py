@@ -34,6 +34,7 @@ class TransportLayer(LayerBase):
                 acked_message = next(seq_pckt for seq_pckt in self.ack_buffer if seq_pckt.transport.seq_num == msg.transport.ack_num)
                 if acked_message is not None:
                     self.ack_buffer.remove(acked_message)
+                    #print("Ack (id=%d) found for %s" % (self.node_data.id, acked_message))
             else:
                 # On packet received
                 pckt = packet.Packet()
