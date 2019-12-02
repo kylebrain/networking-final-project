@@ -1,6 +1,8 @@
 from layers.layer_base import LayerBase, BaseLayerArgs
 from queue import Queue
 import packet
+import time
+from threading import Thread
 
 class TransportLayerArgs(BaseLayerArgs):
     pass
@@ -10,6 +12,7 @@ class TransportLayer(LayerBase):
         super(TransportLayer, self).__init__(node_data, layer_id, args)
         self.ack_buffer = []
         self.current_seq = 0
+        self.wait_time = 1
 
     def process_send(self, msg):
         if msg.transport.type_id == 0 and msg.transport.tcp_type == 0:
@@ -17,6 +20,9 @@ class TransportLayer(LayerBase):
             msg.transport.seq_num = self.current_seq
             self.current_seq += 1
             msg.network = packet.NetworkingPacket(self.node_data.id, msg.app.dest_id)
+            retransmit_thread = Thread(target=self.retransmit, args=(msg, self.wait_time))
+            retransmit_thread.daemon = True
+            retransmit_thread.start()
             self.ack_buffer.append(msg)  # might need to use copy constructor
         self.below_layer.send_buffer.put(msg)
 
@@ -38,5 +44,13 @@ class TransportLayer(LayerBase):
         else:
             # On UDP packet received
             self.above_layer.receive_buffer.put(msg)
+
+    def retransmit(self, msg, wait_time):
+        time.sleep(wait_time)
+        if msg in self.ack_buffer:
+            retransmit_thread = Thread(target=self.retransmit, args=(msg, wait_time))
+            retransmit_thread.daemon = True
+            retransmit_thread.start()
+            self.below_layer.send_buffer.put(msg)
 
 
