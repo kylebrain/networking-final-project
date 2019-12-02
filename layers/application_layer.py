@@ -34,7 +34,7 @@ class ApplicationLayer(LayerBase):
 
 
     def process_send(self, msg):
-        msg.network = packet.NetworkingPacket(self.node_data.id, msg.app.dest_id)
+        msg.transport = packet.TransportPacket(0)
         self.below_layer.send_buffer.put(msg)
 
     def create_data(self):

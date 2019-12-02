@@ -5,7 +5,7 @@ import numpy as np
 import packet
 
 def main():
-    num_nodes = 500
+    num_nodes = 50
     max_connections = 4
     sparcity = max_connections / num_nodes
     router_ratio = 0.8
