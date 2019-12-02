@@ -1,5 +1,5 @@
 import math
-def djikstra(start, end, adjacency_matrix, battery_table):
+def djikstra(start, end, adjacency_matrix, battery_table, alpha):
     numNodes = len(battery_table)
     dist = [math.inf] * numNodes
     parent = [None] * numNodes
@@ -16,7 +16,10 @@ def djikstra(start, end, adjacency_matrix, battery_table):
         for i, neighbor in enumerate(Q):
             if adjacency_matrix[u][neighbor] == 0:
                 continue
-            alt = dist[u] + 1
+            battery = battery_table[neighbor]
+            if battery == -1:
+                battery = 5000
+            alt = dist[u] + 1 + alpha * (1 - battery / 10000.0)
             if alt < dist[neighbor]:
                 dist[neighbor] = alt
                 parent[neighbor] = u
