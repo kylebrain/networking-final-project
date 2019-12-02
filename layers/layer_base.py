@@ -46,7 +46,7 @@ class LayerBase():
         """
         while True:
             msg = self.receive_buffer.get()
-            print("Layer %d (id=%d) receive: %s" % (self.layer_id, self.node_data.id, msg))
+            #print("Layer %d (id=%d) receive: %s" % (self.layer_id, self.node_data.id, msg))
             self.process_receive(msg)
 
     def send(self):
@@ -55,7 +55,7 @@ class LayerBase():
         """
         while True:
             msg = self.send_buffer.get()
-            print("Layer %d (id=%d) send: %s" % (self.layer_id, self.node_data.id, msg))
+            #print("Layer %d (id=%d) send: %s" % (self.layer_id, self.node_data.id, msg))
             self.process_send(msg)
 
     @abc.abstractmethod

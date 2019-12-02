@@ -3,6 +3,7 @@ from queue import Queue
 from packet import LinkPacket, NetworkingPacket, Packet
 from threading import Thread
 import time
+from djikstra import djikstra
 
 class NetworkingLayerArgs(BaseLayerArgs):
     pass
@@ -14,7 +15,7 @@ class NetworkingLayer(LayerBase):
         self.previous_dist_vect = []
         dist_vect_thread = Thread(target=self.periodic_distance_vector)
         dist_vect_thread.daemon = True
-        dist_vect_thread.start()
+        #dist_vect_thread.start()
 
     def process_send(self, msg):
         if msg.network.dest_id == self.node_data.id:
@@ -26,11 +27,12 @@ class NetworkingLayer(LayerBase):
                 ignore_list.append(msg.link.src_id)
             self.broadcast(msg, ignore_list)
         else:
-            dest = next(i for i, x in enumerate(self.node_data.network[self.node_data.id]) if x == 1 and i != self.node_data.id)
-
-            if msg.link is not None and dest == msg.link.src_id:
-                print("Loop detected between link (id=%d) and (id=%d)" % (self.node_data.id, dest))
-                return
+            #dest = next(i for i, x in enumerate(self.node_data.network[self.node_data.id]) if x == 1 and i != self.node_data.id)
+            path = djikstra(self.node_data.id, msg.network.dest_id, self.node_data.network, self.node_data.battery_table)
+            dest = path[1]
+            #if msg.link is not None and dest == msg.link.src_id:
+            #    print("Loop detected between link (id=%d) and (id=%d)" % (self.node_data.id, dest))
+            #    return
             msg.link = LinkPacket(self.node_data.id, dest)
             super(NetworkingLayer, self).process_send(msg)
 
