@@ -25,7 +25,7 @@ class LinkLayer(LayerBase):
             self.receive_buffer.put(msg)
         else:
             self.transmit(msg)
-    
+
     def process_receive(self, msg):
         if msg.link.dest_id != self.node_data.id:
             raise ValueError("Link layer (id = %d) received data intended for (id = %d)" % (self.node_data.id, msg.link.dest_id))
