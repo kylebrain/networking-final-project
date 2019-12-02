@@ -2,10 +2,10 @@ import random
 import layers
 
 class NodeData():
-    def __init__(self, id, network, nodes):
+    def __init__(self, id, network, nodes, numNodes):
         self.id = id
         self.battery = 100
-        self.battery_table = [-1]*15
+        self.battery_table = [-1]*numNodes
         self.network = network
         self.nodes = nodes
 
@@ -34,7 +34,7 @@ class NodeManager():
         nodes = []
         added_nodes = [[0, 0]]
 
-        node_data = NodeData(0, self.adjacency_matrix, nodes)
+        node_data = NodeData(0, self.adjacency_matrix, nodes, self.num_nodes)
 
         first_class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.ApplicationLayer]
         first_args_list = [layers.LinkLayerArgs(), layers.NetworkingLayerArgs(), layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
@@ -54,7 +54,7 @@ class NodeManager():
             self.adjacency_matrix[neighbor][toAdd] = 1
             added_nodes.append([toAdd, 1])
 
-            node_data = NodeData(toAdd, self.adjacency_matrix, nodes)
+            node_data = NodeData(toAdd, self.adjacency_matrix, nodes, self.num_nodes)
 
             # Chance to be a router or sensor application
             if random.random() < self.router_ratio:
