@@ -8,13 +8,9 @@ import fileinput
 import re
 
 def main():
-    """num_nodes = 50
-    max_connections = 4
-    sparcity = max_connections / num_nodes
-    router_ratio = 0.8"""
-	if len(sys.argv) < 2:
-		print ("Improper running. (EX: python3 main.py config.txt)
-		return
+    if len(sys.argv) < 2:
+        print ("Improper running. (EX: python3 main.py config.txt)")
+        return
     num_nodes, max_connections, sparcity, router_ratio = netConfig(sys.argv[1])
     nodeManager = NodeManager(num_nodes, sparcity, max_connections, router_ratio)
     nodes, network = nodeManager.CreateNetwork()
@@ -28,22 +24,20 @@ def main():
 
 
 def netConfig(path):
-	with open(path, 'r') as fp:
-		info = fp.readlines()
-		for i in info:
-			print(i)
-			if "num_nodes" in i:
-				d = re.findall("\d+", i)
-				nodes = int(d[0])
-			elif "max_connections" in i:
-				d = re.findall("\d+", i)
-				cons = int(d[0])
-			elif "router_ratio" in i:
-				d = re.findall("\d+\.\d+", i)
-				ratio = float(d[0])
-	spar = float(cons)/nodes
-	return nodes, cons, spar, ratio
-		
+    with open(path, 'r') as fp:
+        info = fp.readlines()
+        for i in info:
+            if "num_nodes" in i:
+                d = re.findall("\d+", i)
+                nodes = int(d[0])
+            elif "max_connections" in i:
+                d = re.findall("\d+", i)
+                cons = int(d[0])
+            elif "router_ratio" in i:
+                d = re.findall("\d+\.\d+", i)
+                ratio = float(d[0])
+    spar = float(cons)/nodes
+    return nodes, cons, spar, ratio
 
 if __name__ == '__main__':
     main()
