@@ -28,8 +28,7 @@ class LinkLayer(LayerBase):
                 self.node_data.battery -= 10
             if self.node_data.battery <= 0:
                 self.simulation_mng.sim_running = False
-                print("Link layer (id=%d) dead, battery table: %s" % (self.node_data.id, self.node_data.battery_table))
-                #sys.exit(0)
+                # print("Link layer (id=%d) dead, battery table: %s" % (self.node_data.id, self.node_data.battery_table))
             else:
                 for i in range(20):
                     if prevBattery > i * 500 and self.node_data.battery <= i * 500:

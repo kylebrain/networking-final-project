@@ -24,24 +24,34 @@ def main():
     nodes, network = nodeManager.CreateNetwork()
     app_layer_nodes = [i for i, node in enumerate(nodes) if len(node) == 4]
 
-
-    print("Simulation Running")
-    print(sim_args.__dict__)
+    if sim_args.beautify:
+        print("Simulation Running")
+        print(sim_args.__dict__)
     start_time = time.time()
     request_period = 0.01
     while simulation_manager.sim_running:
         src_id, dest_id = get_src_dest(app_layer_nodes)
-        req_thread = Thread(target=make_request, args=(nodes, src_id, dest_id))
+        req_thread = Thread(target=make_request, args=(nodes, src_id, dest_id, sim_args.beautify))
         req_thread.daemon = True
         req_thread.start()
         time.sleep(request_period)
 
-    print("Total loss: %d" % (metric_manager.total_loss, ))
-    print("Total packets transmitted: %d" % (metric_manager.total_packets, ))
-    print("Application packets received: %d" % (metric_manager.packets_received, ))
-    print("Average delay: %f" % (np.mean(metric_manager.delay), ))
-    print("Time alive: %f" % (time.time() - start_time))
-    print("")
+    time_alive = time.time() - start_time
+
+    if sim_args.beautify:
+        print("Battery dead. Quiting Simulation!")
+        print("Total loss: %d" % (metric_manager.total_loss, ))
+        print("Total packets transmitted: %d" % (metric_manager.total_packets, ))
+        print("Application packets received: %d" % (metric_manager.packets_received, ))
+        print("Average delay: %f" % (np.mean(metric_manager.delay), ))
+        print("Time alive: %f" % (time_alive))
+    else:
+        print("%f,%f,%d,%f,%f" %
+             (sim_args.battery_weight,
+             float(metric_manager.total_loss) / metric_manager.total_packets,
+             metric_manager.packets_received,
+             np.mean(metric_manager.delay),
+             time_alive))
 
 def get_src_dest(app_layer_nodes):
     src_id = random.choice(app_layer_nodes)
@@ -52,9 +62,10 @@ def get_src_dest(app_layer_nodes):
     return src_id , dest_id
 
 
-def make_request(nodes, src, dest):
+def make_request(nodes, src, dest, beautify):
     data = nodes[src][3].get_data(dest)
-    print("App layer (id = %d) get request found data: %s from node (id = %d)" % (src, data, dest))
+    if beautify:
+        print("App layer (id = %d) get request found data: %s from node (id = %d)" % (src, data, dest))
 
 class SimulationArgs():
     def __init__(self):
@@ -64,6 +75,7 @@ class SimulationArgs():
         self.router_ratio = 0.0
         self.buffer_size = 0
         self.battery_weight = 0.0
+        self.beautify = False
 
 def netConfig(path):
     ret = SimulationArgs()
@@ -85,6 +97,9 @@ def netConfig(path):
             elif "battery_weight" in i:
                 d = re.findall("\d+\.\d+", i)
                 ret.battery_weight = float(d[0])
+            elif "beautify" in i:
+                d = re.findall("\d+", i)
+                ret.beautify = bool(int(d[0]))
     ret.sparcity = float(ret.max_connections) / ret.num_nodes
     return ret
 
