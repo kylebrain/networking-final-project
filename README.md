@@ -3,7 +3,7 @@ Repository for the CPE 400 networking project. Designing a protocol to maximize 
 
 ## Compilation
 ```bash
-python main.py
+python main.py <config>
 ```
 
 ## Layers
