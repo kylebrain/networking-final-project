@@ -11,8 +11,9 @@ class LinkLayer(LayerBase):
         if not self.simulation_mng.sim_running:
             return
         if self.node_data.network[self.node_data.id][msg.link.dest_id] == 0:
-            print(msg)
             raise ValueError("Link layer transmits (id = %d) can not transmit to (id = %d)" % (self.node_data.id, msg.link.dest_id))
+
+        self.metric_mng.total_packets += 1
 
         if self.node_data.nodes[msg.link.dest_id][self.layer_id].receive_buffer.qsize() < self.args.buffer_size:
             self.node_data.nodes[msg.link.dest_id][self.layer_id].receive_buffer.put(msg)

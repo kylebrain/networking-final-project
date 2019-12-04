@@ -2,4 +2,4 @@ num_nodes: 50
 max_connections: 8
 router_ratio: 0.8
 buffer_size: 30
-battery_weight: 10.0
+battery_weight: 100.0

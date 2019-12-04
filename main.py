@@ -22,13 +22,13 @@ def main():
     simulation_manager = SimulationManager()
     nodeManager = NodeManager(sim_args, metric_manager, simulation_manager)
     nodes, network = nodeManager.CreateNetwork()
-    print(np.matrix(network))
     app_layer_nodes = [i for i, node in enumerate(nodes) if len(node) == 4]
 
-    print(app_layer_nodes)
 
+    print("Simulation Running")
+    print(sim_args.__dict__)
     start_time = time.time()
-    request_period = 0.1
+    request_period = 0.01
     while simulation_manager.sim_running:
         src_id, dest_id = get_src_dest(app_layer_nodes)
         req_thread = Thread(target=make_request, args=(nodes, src_id, dest_id))
@@ -37,8 +37,11 @@ def main():
         time.sleep(request_period)
 
     print("Total loss: %d" % (metric_manager.total_loss, ))
-    print("Packets received: %d" % (metric_manager.packets_received, ))
+    print("Total packets transmitted: %d" % (metric_manager.total_packets, ))
+    print("Application packets received: %d" % (metric_manager.packets_received, ))
     print("Average delay: %f" % (np.mean(metric_manager.delay), ))
+    print("Time alive: %f" % (time.time() - start_time))
+    print("")
 
 def get_src_dest(app_layer_nodes):
     src_id = random.choice(app_layer_nodes)
