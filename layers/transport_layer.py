@@ -23,7 +23,7 @@ class TransportLayer(LayerBase):
             retransmit_thread = Thread(target=self.retransmit, args=(msg, self.wait_time))
             retransmit_thread.daemon = True
             retransmit_thread.start()
-            self.ack_buffer.append(msg)  # might need to use copy constructor
+            self.ack_buffer.append(packet.Packet.from_copy(msg))
         self.below_layer.send_buffer.put(msg)
 
     def process_receive(self, msg):
@@ -48,10 +48,10 @@ class TransportLayer(LayerBase):
 
     def retransmit(self, msg, wait_time):
         time.sleep(wait_time)
-        if msg in self.ack_buffer:
+        if msg.transport.seq_num in (pckt.transport.seq_num for pckt in self.ack_buffer):
             retransmit_thread = Thread(target=self.retransmit, args=(msg, wait_time))
             retransmit_thread.daemon = True
             retransmit_thread.start()
-            self.below_layer.send_buffer.put(msg)
+            self.below_layer.send_buffer.put(packet.Packet.from_copy(msg))
 
 

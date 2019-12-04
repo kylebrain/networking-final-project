@@ -7,6 +7,9 @@ import packet
 import sys
 import fileinput
 import re
+import time
+import random
+from threading import Thread
 
 def main():
     if len(sys.argv) < 2:
@@ -18,16 +21,36 @@ def main():
     nodeManager = NodeManager(sim_args, metric_manager)
     nodes, network = nodeManager.CreateNetwork()
     print(np.matrix(network))
-    app_layer_nodes = [(i, node) for i, node in enumerate(nodes) if len(node) == 4]
+    app_layer_nodes = [i for i, node in enumerate(nodes) if len(node) == 4]
 
-    for i, node in enumerate(app_layer_nodes):
-        dest = app_layer_nodes[len(app_layer_nodes) - i - 1][0]
-        data = node[1][3].get_data(dest)
-        print("App layer (id = %d) get request found data: %s" % (node[0], data))
+    print(app_layer_nodes)
+
+    sim_run_time = 20
+    start_time = time.time()
+    request_period = 0.1
+    while time.time() - start_time < sim_run_time:
+        src_id, dest_id = get_src_dest(app_layer_nodes)
+        req_thread = Thread(target=make_request, args=(nodes, src_id, dest_id))
+        req_thread.daemon = True
+        req_thread.start()
+        time.sleep(request_period)
 
     print("Total loss: %d" % (metric_manager.total_loss, ))
     print("Packets received: %d" % (metric_manager.packets_received, ))
     print("Average delay: %f" % (np.mean(metric_manager.delay), ))
+
+def get_src_dest(app_layer_nodes):
+    src_id = random.choice(app_layer_nodes)
+    dest_id = random.choice(app_layer_nodes)
+    while dest_id == src_id:
+        dest_id = random.choice(app_layer_nodes)
+
+    return src_id , dest_id
+
+
+def make_request(nodes, src, dest):
+    data = nodes[src][3].get_data(dest)
+    print("App layer (id = %d) get request found data: %s from node (id = %d)" % (src, data, dest))
 
 class SimulationArgs():
     def __init__(self):

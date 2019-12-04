@@ -71,11 +71,7 @@ class NetworkingLayer(LayerBase):
             if link > 0 and i != self.node_data.id and i not in ignore:
 
                 # create copy constructor
-                cur_msg = Packet()
-                cur_msg.payload = msg.payload
-                cur_msg.type = msg.type
-                cur_msg.network = msg.network
-                cur_msg.time_stamp = msg.time_stamp
+                cur_msg = Packet.from_copy(msg)
 
                 cur_msg.link = LinkPacket(self.node_data.id, i)
                 self.below_layer.send_buffer.put(cur_msg)

@@ -11,6 +11,18 @@ class Packet():
         self.type = 0
         self.time_stamp = time.time()
 
+    @classmethod
+    def from_copy(cls, other):
+        ret = cls()
+        ret.app = other.app
+        ret.transport = other.transport
+        ret.network = other.network
+        ret.link = other.link
+        ret.payload = other.payload
+        ret.type = other.type
+        ret.time_stamp = other.time_stamp
+        return ret
+
     def __str__(self):
         app_str = ""
         if self.app is not None:
