@@ -3,13 +3,16 @@ from queue import Queue
 import sys
 
 class LinkLayerArgs(BaseLayerArgs):
-    pass
+    def __init__(self, buffer_size):
+        self.buffer_size = buffer_size
 
 class LinkLayer(LayerBase):
     def transmit(self, msg):
         if self.node_data.network[self.node_data.id][msg.link.dest_id] == 0:
             raise ValueError("Link layer transmits (id = %d) can not transmit to (id = %d)" % (self.node_data.id, msg.link.dest_id))
-        self.node_data.nodes[msg.link.dest_id][self.layer_id].receive_buffer.put(msg)
+
+        if self.node_data.nodes[msg.link.dest_id][self.layer_id].receive_buffer.qsize() < self.args.buffer_size:
+            self.node_data.nodes[msg.link.dest_id][self.layer_id].receive_buffer.put(msg)
 
         if self.node_data.battery > 0:
             self.node_data.battery -= 1
