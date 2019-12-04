@@ -12,7 +12,7 @@ class TransportLayer(LayerBase):
         super(TransportLayer, self).__init__(metric_mng, node_data, layer_id, args)
         self.ack_buffer = []
         self.current_seq = 0
-        self.wait_time = 1
+        self.wait_time = 10
 
     def process_send(self, msg):
         if msg.transport.type_id == 0 and msg.transport.tcp_type == 0:
@@ -53,5 +53,3 @@ class TransportLayer(LayerBase):
             retransmit_thread.daemon = True
             retransmit_thread.start()
             self.below_layer.send_buffer.put(packet.Packet.from_copy(msg))
-
-
