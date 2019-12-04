@@ -1,6 +1,7 @@
 import layers
 import time
 from node_manager import NodeManager
+from metric_manager import MetricManager
 import numpy as np
 import packet
 import sys
@@ -11,8 +12,10 @@ def main():
     if len(sys.argv) < 2:
         print ("Improper running. (EX: python3 main.py config.txt)")
         return
-    num_nodes, max_connections, sparcity, router_ratio, buffer_size = netConfig(sys.argv[1])
-    nodeManager = NodeManager(num_nodes, sparcity, max_connections, router_ratio, buffer_size)
+    sim_args = netConfig(sys.argv[1])
+
+    metric_manager = MetricManager()
+    nodeManager = NodeManager(sim_args, metric_manager)
     nodes, network = nodeManager.CreateNetwork()
     print(np.matrix(network))
     app_layer_nodes = [(i, node) for i, node in enumerate(nodes) if len(node) == 4]
@@ -22,25 +25,41 @@ def main():
         data = node[1][3].get_data(dest)
         print("App layer (id = %d) get request found data: %s" % (node[0], data))
 
+    print("Total loss: %d" % (metric_manager.total_loss, ))
+    print("Packets received: %d" % (metric_manager.packets_received, ))
+    print("Average delay: %f" % (np.mean(metric_manager.delay), ))
+
+class SimulationArgs():
+    def __init__(self):
+        self.num_nodes = 0
+        self.sparcity = 0.0
+        self.max_connections = 0
+        self.router_ratio = 0.0
+        self.buffer_size = 0
+        self.battery_weight = 0.0
 
 def netConfig(path):
+    ret = SimulationArgs()
     with open(path, 'r') as fp:
         info = fp.readlines()
         for i in info:
             if "num_nodes" in i:
                 d = re.findall("\d+", i)
-                nodes = int(d[0])
+                ret.num_nodes = int(d[0])
             elif "max_connections" in i:
                 d = re.findall("\d+", i)
-                cons = int(d[0])
+                ret.max_connections = int(d[0])
             elif "router_ratio" in i:
                 d = re.findall("\d+\.\d+", i)
-                ratio = float(d[0])
+                ret.router_ratio = float(d[0])
             elif "buffer_size" in i:
                 d = re.findall("\d+", i)
-                buff = int(d[0])
-    spar = float(cons)/nodes
-    return nodes, cons, spar, ratio, buff
+                ret.buffer_size = int(d[0])
+            elif "battery_weight" in i:
+                d = re.findall("\d+\.\d+", i)
+                ret.battery_weight = float(d[0])
+    ret.sparcity = float(ret.max_connections) / ret.num_nodes
+    return ret
 
 if __name__ == '__main__':
     main()

@@ -2,13 +2,14 @@ from layers.layer_base import LayerBase, BaseLayerArgs
 from queue import Queue
 from random import seed, random
 import packet
+import time
 
 class ApplicationLayerArgs(BaseLayerArgs):
     pass
 
 class ApplicationLayer(LayerBase):
-    def __init__(self, node_data, layer_id, args):
-        super(ApplicationLayer, self).__init__(node_data, layer_id, args)
+    def __init__(self, metric_mng, node_data, layer_id, args):
+        super(ApplicationLayer, self).__init__(metric_mng, node_data, layer_id, args)
         self.host_buffer = []
 
     def get_data(self, dest):
@@ -25,6 +26,8 @@ class ApplicationLayer(LayerBase):
         return dest in [msg.app.src_id for msg in self.host_buffer]
 
     def process_receive(self, msg):
+        self.metric_mng.packets_received += 1
+        self.metric_mng.delay.append(time.time() - msg.time_stamp)
         if msg.app.type_id == 0:
             pckt = packet.Packet()
             pckt.app = packet.AppPacket(self.node_data.id, msg.app.src_id, 1, self.create_data())

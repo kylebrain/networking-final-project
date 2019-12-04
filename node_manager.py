@@ -13,19 +13,21 @@ class NodeManager():
     """
     Creates a random network of nodes
     """
-    def __init__(self, num_nodes, sparcity, max_connections, router_ratio, buffer_size):
+    def __init__(self, sim_args, metric_mng):
         """
         Arguments
             num_nodes - number of nodes in the network
             sparcity - number from [0, 1] which represents the density of connections in the network
             max_connections - maximum number of connections a node can have
         """
-        self.num_nodes = num_nodes
-        self.sparcity = sparcity
-        self.router_ratio = router_ratio
-        self.max_connections = max_connections
-        self.buffer_size = buffer_size
-        self.adjacency_matrix = [[0 for i in range(num_nodes)] for j in range(num_nodes)]
+        self.num_nodes = sim_args.num_nodes
+        self.sparcity = sim_args.sparcity
+        self.router_ratio = sim_args.router_ratio
+        self.max_connections = sim_args.max_connections
+        self.buffer_size = sim_args.buffer_size
+        self.battery_weight = sim_args.battery_weight
+        self.metric_mng = metric_mng
+        self.adjacency_matrix = [[0 for i in range(sim_args.num_nodes)] for j in range(sim_args.num_nodes)]
 
     def CreateNetwork(self):
         """
@@ -37,11 +39,21 @@ class NodeManager():
 
         node_data = NodeData(0, self.adjacency_matrix, nodes, self.num_nodes)
 
-        first_class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.ApplicationLayer]
-        first_args_list = [layers.LinkLayerArgs(self.buffer_size), layers.NetworkingLayerArgs(), layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
-        first_layer_stack = layers.create_layers(node_data, first_class_list, first_args_list)
+        # Set up common arguments for each layer
+        router_args = [layers.LinkLayerArgs(self.buffer_size), layers.NetworkingLayerArgs(self.battery_weight)]
+        top_layer_args = [layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
 
+        # Set up the class lists for routers and sensors
+        router_class_list = [layers.LinkLayer, layers.NetworkingLayer]
+        top_layer_class_list = [layers.TransportLayer, layers.ApplicationLayer]
+
+        sensor_args = router_args + top_layer_args
+        sensor_class_list = router_class_list + top_layer_class_list
+
+        # Create the first node which must be a sensor
+        first_layer_stack = layers.create_layers(self.metric_mng, node_data, sensor_class_list, sensor_args)
         nodes.append(first_layer_stack)
+
         for toAdd in range(1, self.num_nodes):
             # Gauranteed to connect to at least one node
             if len(added_nodes) == 0:
@@ -59,14 +71,10 @@ class NodeManager():
 
             # Chance to be a router or sensor application
             if random.random() < self.router_ratio:
-                class_list = [layers.LinkLayer, layers.NetworkingLayer]
-                args_list = [layers.LinkLayerArgs(self.buffer_size), layers.NetworkingLayerArgs()]
-                layer_stack = layers.create_layers(node_data, class_list, args_list)
+                layer_stack = layers.create_layers(self.metric_mng, node_data, router_class_list, router_args)
                 nodes.append(layer_stack)
             else:
-                class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.ApplicationLayer]
-                args_list = [layers.LinkLayerArgs(self.buffer_size), layers.NetworkingLayerArgs(), layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
-                layer_stack = layers.create_layers(node_data, class_list, args_list)
+                layer_stack = layers.create_layers(self.metric_mng, node_data, sensor_class_list, sensor_args)
                 nodes.append(layer_stack)
 
             # Try to connect to other nodes with some probability

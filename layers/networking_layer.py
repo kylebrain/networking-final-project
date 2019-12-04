@@ -7,16 +7,14 @@ from djikstra import djikstra
 import random
 
 class NetworkingLayerArgs(BaseLayerArgs):
-    pass
+    def __init__(self, battery_weight):
+        self.battery_weight = battery_weight
 
 class NetworkingLayer(LayerBase):
-    def __init__(self, node_data, layer_id, args):
-        super(NetworkingLayer, self).__init__(node_data, layer_id, args)
+    def __init__(self, metric_mng, node_data, layer_id, args):
+        super(NetworkingLayer, self).__init__(metric_mng, node_data, layer_id, args)
 
         self.previous_dist_vect = []
-        #dist_vect_thread = Thread(target=self.periodic_distance_vector)
-        #dist_vect_thread.daemon = True
-        #dist_vect_thread.start()
         self.numSent = 0
 
     def process_send(self, msg):
@@ -29,8 +27,7 @@ class NetworkingLayer(LayerBase):
                 ignore_list.append(msg.link.src_id)
             self.broadcast(msg, ignore_list)
         else:
-            #dest = next(i for i, x in enumerate(self.node_data.network[self.node_data.id]) if x == 1 and i != self.node_data.id)
-            path = djikstra(self.node_data.id, msg.network.dest_id, self.node_data.network, self.node_data.battery_table, 2.0)
+            path = djikstra(self.node_data.id, msg.network.dest_id, self.node_data.network, self.node_data.battery_table, self.args.battery_weight)
             dest = path[1]
             self.numSent += 1
             if self.numSent > 3:
@@ -66,7 +63,6 @@ class NetworkingLayer(LayerBase):
         # Add the distance vector to the payload
         msg.payload = (self.node_data.id, self.node_data.battery)
         msg.type = 1
-        msg.time_stamp = time.time()
         msg.network = NetworkingPacket(self.node_data.id, -1)
         self.send_buffer.put(msg)
 

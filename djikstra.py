@@ -1,5 +1,9 @@
 import math
-def djikstra(start, end, adjacency_matrix, battery_table, alpha):
+def djikstra(start, end, adjacency_matrix, battery_table, battery_weight):
+    """
+    Parameters
+        battery_weight - Higher the battery_weight, the more the path avoids low battery. How many more nodes a path would take to avoid a node with 0 battery.
+    """
     numNodes = len(battery_table)
     dist = [math.inf] * numNodes
     parent = [None] * numNodes
@@ -19,7 +23,7 @@ def djikstra(start, end, adjacency_matrix, battery_table, alpha):
             battery = battery_table[neighbor]
             if battery == -1:
                 battery = 5000
-            alt = dist[u] + 1 + alpha * (1 - battery / 10000.0)
+            alt = dist[u] + 1 + battery_weight * (1 - battery / 10000.0)
             if alt < dist[neighbor]:
                 dist[neighbor] = alt
                 parent[neighbor] = u

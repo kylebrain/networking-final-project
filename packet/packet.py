@@ -1,4 +1,6 @@
 
+import time
+
 class Packet():
     def __init__(self):
         self.app = None
@@ -7,7 +9,7 @@ class Packet():
         self.link = None
         self.payload = None
         self.type = 0
-        self.time_stamp = 0
+        self.time_stamp = time.time()
 
     def __str__(self):
         app_str = ""

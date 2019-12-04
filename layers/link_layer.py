@@ -13,6 +13,8 @@ class LinkLayer(LayerBase):
 
         if self.node_data.nodes[msg.link.dest_id][self.layer_id].receive_buffer.qsize() < self.args.buffer_size:
             self.node_data.nodes[msg.link.dest_id][self.layer_id].receive_buffer.put(msg)
+        else:
+            self.metric_mng.total_loss += 1
 
         if self.node_data.battery > 0:
             self.node_data.battery -= 1
