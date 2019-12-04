@@ -4,7 +4,7 @@ import layers
 class NodeData():
     def __init__(self, id, network, nodes, numNodes):
         self.id = id
-        self.battery = 10000
+        self.battery = 1000
         self.battery_table = [-1]*numNodes
         self.network = network
         self.nodes = nodes
@@ -13,7 +13,7 @@ class NodeManager():
     """
     Creates a random network of nodes
     """
-    def __init__(self, sim_args, metric_mng):
+    def __init__(self, sim_args, metric_mng, simulation_mng):
         """
         Arguments
             num_nodes - number of nodes in the network
@@ -27,6 +27,7 @@ class NodeManager():
         self.buffer_size = sim_args.buffer_size
         self.battery_weight = sim_args.battery_weight
         self.metric_mng = metric_mng
+        self.simulation_mng = simulation_mng
         self.adjacency_matrix = [[0 for i in range(sim_args.num_nodes)] for j in range(sim_args.num_nodes)]
 
     def CreateNetwork(self):
@@ -51,7 +52,7 @@ class NodeManager():
         sensor_class_list = router_class_list + top_layer_class_list
 
         # Create the first node which must be a sensor
-        first_layer_stack = layers.create_layers(self.metric_mng, node_data, sensor_class_list, sensor_args)
+        first_layer_stack = layers.create_layers(self.simulation_mng, self.metric_mng, node_data, sensor_class_list, sensor_args)
         nodes.append(first_layer_stack)
 
         for toAdd in range(1, self.num_nodes):
@@ -71,10 +72,10 @@ class NodeManager():
 
             # Chance to be a router or sensor application
             if random.random() < self.router_ratio:
-                layer_stack = layers.create_layers(self.metric_mng, node_data, router_class_list, router_args)
+                layer_stack = layers.create_layers(self.simulation_mng, self.metric_mng, node_data, router_class_list, router_args)
                 nodes.append(layer_stack)
             else:
-                layer_stack = layers.create_layers(self.metric_mng, node_data, sensor_class_list, sensor_args)
+                layer_stack = layers.create_layers(self.simulation_mng, self.metric_mng, node_data, sensor_class_list, sensor_args)
                 nodes.append(layer_stack)
 
             # Try to connect to other nodes with some probability

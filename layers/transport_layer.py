@@ -8,8 +8,8 @@ class TransportLayerArgs(BaseLayerArgs):
     pass
 
 class TransportLayer(LayerBase):
-    def __init__(self, metric_mng, node_data, layer_id, args):
-        super(TransportLayer, self).__init__(metric_mng, node_data, layer_id, args)
+    def __init__(self, simulation_mng, metric_mng, node_data, layer_id, args):
+        super(TransportLayer, self).__init__(simulation_mng, metric_mng, node_data, layer_id, args)
         self.ack_buffer = []
         self.current_seq = 0
         self.wait_time = 10

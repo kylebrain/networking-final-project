@@ -2,6 +2,7 @@ import layers
 import time
 from node_manager import NodeManager
 from metric_manager import MetricManager
+from simulation_manager import SimulationManager
 import numpy as np
 import packet
 import sys
@@ -18,17 +19,17 @@ def main():
     sim_args = netConfig(sys.argv[1])
 
     metric_manager = MetricManager()
-    nodeManager = NodeManager(sim_args, metric_manager)
+    simulation_manager = SimulationManager()
+    nodeManager = NodeManager(sim_args, metric_manager, simulation_manager)
     nodes, network = nodeManager.CreateNetwork()
     print(np.matrix(network))
     app_layer_nodes = [i for i, node in enumerate(nodes) if len(node) == 4]
 
     print(app_layer_nodes)
 
-    sim_run_time = 20
     start_time = time.time()
     request_period = 0.1
-    while time.time() - start_time < sim_run_time:
+    while simulation_manager.sim_running:
         src_id, dest_id = get_src_dest(app_layer_nodes)
         req_thread = Thread(target=make_request, args=(nodes, src_id, dest_id))
         req_thread.daemon = True

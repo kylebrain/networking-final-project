@@ -11,8 +11,8 @@ class NetworkingLayerArgs(BaseLayerArgs):
         self.battery_weight = battery_weight
 
 class NetworkingLayer(LayerBase):
-    def __init__(self, metric_mng, node_data, layer_id, args):
-        super(NetworkingLayer, self).__init__(metric_mng, node_data, layer_id, args)
+    def __init__(self, simulation_mng, metric_mng, node_data, layer_id, args):
+        super(NetworkingLayer, self).__init__(simulation_mng, metric_mng, node_data, layer_id, args)
 
         self.previous_dist_vect = []
         self.numSent = 0

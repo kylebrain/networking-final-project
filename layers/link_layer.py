@@ -8,6 +8,8 @@ class LinkLayerArgs(BaseLayerArgs):
 
 class LinkLayer(LayerBase):
     def transmit(self, msg):
+        if not self.simulation_mng.sim_running:
+            return
         if self.node_data.network[self.node_data.id][msg.link.dest_id] == 0:
             print(msg)
             raise ValueError("Link layer transmits (id = %d) can not transmit to (id = %d)" % (self.node_data.id, msg.link.dest_id))
@@ -20,8 +22,9 @@ class LinkLayer(LayerBase):
         if self.node_data.battery > 0:
             self.node_data.battery -= 1
             if self.node_data.battery <= 0:
+                self.simulation_mng.sim_running = False
                 print("Link layer (id=%d) dead, battery table: %s" % (self.node_data.id, self.node_data.battery_table))
-                sys.exit(0)
+                #sys.exit(0)
 
     def process_send(self, msg):
         if msg.link is None:

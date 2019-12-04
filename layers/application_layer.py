@@ -8,8 +8,8 @@ class ApplicationLayerArgs(BaseLayerArgs):
     pass
 
 class ApplicationLayer(LayerBase):
-    def __init__(self, metric_mng, node_data, layer_id, args):
-        super(ApplicationLayer, self).__init__(metric_mng, node_data, layer_id, args)
+    def __init__(self, simulation_mng, metric_mng, node_data, layer_id, args):
+        super(ApplicationLayer, self).__init__(simulation_mng, metric_mng, node_data, layer_id, args)
         self.host_buffer = []
 
     def get_data(self, dest):
@@ -42,4 +42,3 @@ class ApplicationLayer(LayerBase):
 
     def create_data(self):
         return (9/5)*random()+32
-
