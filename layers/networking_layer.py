@@ -29,10 +29,10 @@ class NetworkingLayer(LayerBase):
         else:
             path = djikstra(self.node_data.id, msg.network.dest_id, self.node_data.network, self.node_data.battery_table, self.args.battery_weight)
             dest = path[1]
-            self.numSent += 1
-            if self.numSent > 5:
-                self.numSent = 0
-                self.broadcast_distance_vector()
+            #self.numSent += 1
+            #if self.numSent > 5:
+            #    self.numSent = 0
+            #    self.broadcast_distance_vector()
             #if msg.link is not None and dest == msg.link.src_id:
             #    print("Loop detected between link (id=%d) and (id=%d)" % (self.node_data.id, dest))
             #    return

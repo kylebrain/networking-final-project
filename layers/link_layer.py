@@ -20,11 +20,19 @@ class LinkLayer(LayerBase):
             self.metric_mng.total_loss += 1
 
         if self.node_data.battery > 0:
-            self.node_data.battery -= 1
+            prevBattery = self.node_data.battery
+            if msg.app is None:
+                self.node_data.battery -= 5
+            else:
+                self.node_data.battery -= 10
             if self.node_data.battery <= 0:
                 self.simulation_mng.sim_running = False
                 print("Link layer (id=%d) dead, battery table: %s" % (self.node_data.id, self.node_data.battery_table))
                 #sys.exit(0)
+            else:
+                for i in range(20):
+                    if prevBattery > i * 500 and self.node_data.battery <= i * 500:
+                        self.above_layer.broadcast_distance_vector()
 
     def process_send(self, msg):
         if msg.link is None:

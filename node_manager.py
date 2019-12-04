@@ -4,7 +4,7 @@ import layers
 class NodeData():
     def __init__(self, id, network, nodes, numNodes):
         self.id = id
-        self.battery = 1000
+        self.battery = 10000
         self.battery_table = [-1]*numNodes
         self.network = network
         self.nodes = nodes

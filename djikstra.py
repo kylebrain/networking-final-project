@@ -22,8 +22,8 @@ def djikstra(start, end, adjacency_matrix, battery_table, battery_weight):
                 continue
             battery = battery_table[neighbor]
             if battery == -1:
-                battery = 500
-            alt = dist[u] + 1 + battery_weight * (1 - battery / 1000.0)
+                battery = 5000
+            alt = dist[u] + 1 + battery_weight * (1 - battery / 10000.0)
             if alt < dist[neighbor]:
                 dist[neighbor] = alt
                 parent[neighbor] = u
