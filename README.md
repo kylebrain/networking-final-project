@@ -1,11 +1,23 @@
-# cpe400-project
-Repository for the CPE 400 networking project. Designing a protocol to maximize sensor battery life.
+# Distributed Load Routing
+Simulates a network and runs a networking protocol aimed to distribute packet load in order to distribute battery depletion
 
-## Compilation
+## Prerequisites
 ```bash
-python main.py <config>
+pip install numpy
 ```
 
-## Layers
-See layer_base.py for a description of a layer\
-See test_layer.py for documentation on how to create a layer
+## Configuration File
+
+| Field | Description | Accepted Values |
+| ----- |------------ | --------------- |
+| num_nodes | Number of nodes in the network | >= 2 |
+| max_connections | Maximum number of connections a node can have | [2, num_nodes) |
+| router_ratio | Percentage of routers in the network | [0.0, 1.0] |
+| buffer_size | Number of packets the link layer receive buffer can hold at a time | >= 0 |
+| battery_weight | Higher the battery_weight, the more the path avoids low battery | >= 0.0 |
+| beautify | Determines whether the simulation debugs readable information or csv formatted information | 0/1 |
+
+## Running
+```bash
+python main.py <config file path>
+```

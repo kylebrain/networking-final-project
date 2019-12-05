@@ -2,6 +2,10 @@
 import time
 
 class Packet():
+    """
+    Includes references to the components of the packets
+    Also includes data common to all packets
+    """
     def __init__(self):
         self.app = None
         self.transport = None
@@ -13,6 +17,9 @@ class Packet():
 
     @classmethod
     def from_copy(cls, other):
+        """
+        Packet copy constructor
+        """
         ret = cls()
         ret.app = other.app
         ret.transport = other.transport
@@ -24,6 +31,9 @@ class Packet():
         return ret
 
     def __str__(self):
+        """
+        Prints the packet in a readable format including all present packet components
+        """
         app_str = ""
         if self.app is not None:
             app_str = str(self.app)
@@ -40,7 +50,7 @@ class Packet():
 
 class AppPacket():
     def __init__(self, src_id, dest_id, type_id, msg):
-        self.type_id = type_id
+        self.type_id = type_id  # 0 for request, 1 for response
         self.msg = msg
         self.src_id = src_id
         self.dest_id = dest_id

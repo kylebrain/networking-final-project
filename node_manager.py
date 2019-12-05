@@ -14,12 +14,6 @@ class NodeManager():
     Creates a random network of nodes
     """
     def __init__(self, sim_args, metric_mng, simulation_mng):
-        """
-        Arguments
-            num_nodes - number of nodes in the network
-            sparcity - number from [0, 1] which represents the density of connections in the network
-            max_connections - maximum number of connections a node can have
-        """
         self.num_nodes = sim_args.num_nodes
         self.sparcity = sim_args.sparcity
         self.router_ratio = sim_args.router_ratio

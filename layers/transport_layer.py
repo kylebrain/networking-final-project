@@ -8,6 +8,10 @@ class TransportLayerArgs(BaseLayerArgs):
     pass
 
 class TransportLayer(LayerBase):
+    """
+    TCP provides reliable communication with acks and retransmissions
+    UDP essentially acts as a passthrough layer
+    """
     def __init__(self, simulation_mng, metric_mng, node_data, layer_id, args):
         super(TransportLayer, self).__init__(simulation_mng, metric_mng, node_data, layer_id, args)
         self.ack_buffer = []
@@ -15,6 +19,9 @@ class TransportLayer(LayerBase):
         self.wait_time = 10
 
     def process_send(self, msg):
+        """
+        Add create retramission threads for all TCP packets
+        """
         if msg.transport.type_id == 0 and msg.transport.tcp_type == 0:
             # When sending a TCP seq packet
             msg.transport.seq_num = self.current_seq
@@ -27,6 +34,10 @@ class TransportLayer(LayerBase):
         self.below_layer.send_buffer.put(msg)
 
     def process_receive(self, msg):
+        """
+        Remove packets from the ack_buffer if the ack came back for the packet's seq num
+        Send an ack if a TCP packet has been received
+        """
         if msg.transport.type_id == 0:
             # On TCP packet received
             if msg.transport.tcp_type == 1:
@@ -34,7 +45,6 @@ class TransportLayer(LayerBase):
                 acked_message = next((seq_pckt for seq_pckt in self.ack_buffer if seq_pckt.transport.seq_num == msg.transport.ack_num), None)
                 if acked_message is not None:
                     self.ack_buffer.remove(acked_message)
-                    #print("Ack (id=%d) found for %s" % (self.node_data.id, acked_message))
             else:
                 # On packet received
                 pckt = packet.Packet()
@@ -47,6 +57,9 @@ class TransportLayer(LayerBase):
             self.above_layer.receive_buffer.put(msg)
 
     def retransmit(self, msg, wait_time):
+        """
+        Retransmit the msg after wait_time if an ack has not been received
+        """
         time.sleep(wait_time)
         if msg.transport.seq_num in (pckt.transport.seq_num for pckt in self.ack_buffer):
             retransmit_thread = Thread(target=self.retransmit, args=(msg, wait_time))

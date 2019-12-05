@@ -2,6 +2,9 @@ import math
 def djikstra(start, end, adjacency_matrix, battery_table, battery_weight):
     """
     Parameters
+        start - source node
+        end - destination node
+        adjacency_matrix - 1 for a connection, 0 for no connection
         battery_weight - Higher the battery_weight, the more the path avoids low battery. How many more nodes a path would take to avoid a node with 0 battery.
     """
     numNodes = len(battery_table)

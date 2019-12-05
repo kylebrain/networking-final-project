@@ -16,19 +16,29 @@ def main():
     if len(sys.argv) < 2:
         print ("Improper running. (EX: python3 main.py config.txt)")
         return
+
+    # Create the simulation arguments from the config file
     sim_args = netConfig(sys.argv[1])
 
+    # Create the managers
     metric_manager = MetricManager()
     simulation_manager = SimulationManager()
     nodeManager = NodeManager(sim_args, metric_manager, simulation_manager)
+
+    # Create the network
     nodes, network = nodeManager.CreateNetwork()
+
+    # Get all of the application layer (sensors) IDs
     app_layer_nodes = [i for i, node in enumerate(nodes) if len(node) == 4]
 
     if sim_args.beautify:
         print("Simulation Running")
         print(sim_args.__dict__)
+
     start_time = time.time()
     request_period = 0.01
+
+    # Every request_period seconds, select a random sensor node to make a data request from a random sensor node
     while simulation_manager.sim_running:
         src_id, dest_id = get_src_dest(app_layer_nodes)
         req_thread = Thread(target=make_request, args=(nodes, src_id, dest_id, sim_args.beautify))
@@ -38,10 +48,10 @@ def main():
 
     time_alive = time.time() - start_time
 
+    # Print out simulation metrics
     if sim_args.beautify:
         print("Battery dead. Quiting Simulation!")
-        print("Total loss: %d" % (metric_manager.total_loss, ))
-        print("Total packets transmitted: %d" % (metric_manager.total_packets, ))
+        print("Percent loss: %f" % (float(metric_manager.total_loss) / metric_manager.total_packets, ))
         print("Application packets received: %d" % (metric_manager.packets_received, ))
         print("Average delay: %f" % (np.mean(metric_manager.delay), ))
         print("Time alive: %f" % (time_alive))
@@ -54,6 +64,9 @@ def main():
              time_alive))
 
 def get_src_dest(app_layer_nodes):
+    """
+    Returns a pair of distinct random nodes
+    """
     src_id = random.choice(app_layer_nodes)
     dest_id = random.choice(app_layer_nodes)
     while dest_id == src_id:
@@ -63,11 +76,24 @@ def get_src_dest(app_layer_nodes):
 
 
 def make_request(nodes, src, dest, beautify):
+    """
+    Make the src request data from the dest
+    """
     data = nodes[src][3].get_data(dest)
     if beautify:
-        print("App layer (id = %d) get request found data: %s from node (id = %d)" % (src, data, dest))
+        print("App layer (id = %d) get request found data: %.3f from node (id = %d)" % (src, data, dest))
 
 class SimulationArgs():
+    """
+    Includes arguments to be changed by the config file
+    num_nodes - number of nodes in the network
+    sparcity - number from [0, 1] which represents the density of connections in the network
+    max_connections - maximum number of connections a node can have
+    router_ratio - percentage of routers in the network
+    buffer_size - number of packets the link layer receive buffer can hold at a time
+    battery_weight - higher the battery_weight, the more the path avoids low battery
+    beautify - determines whether the simulation debugs readable information or csv formatted information
+    """
     def __init__(self):
         self.num_nodes = 0
         self.sparcity = 0.0
@@ -78,6 +104,10 @@ class SimulationArgs():
         self.beautify = False
 
 def netConfig(path):
+    """
+    Read the config file from the specified path
+    Returns - Populated SimulationArgs object with data from the config file
+    """
     ret = SimulationArgs()
     with open(path, 'r') as fp:
         info = fp.readlines()

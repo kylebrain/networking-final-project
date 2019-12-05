@@ -16,7 +16,11 @@ class LayerBase():
     """
     def __init__(self, simulation_mng, metric_mng, node_data, layer_id, args):
         """
+        Spawns the threads to retreive and process message from the send and receive buffers
         Arguments
+            simulation_mng - used to stop the simulation when a node goes offline
+            metric_mng - used to keep track of loss and delay
+            note_data - initialized node data including ID and battery life
             layer_id - unique id of the layer
             args - specialized arguments defined by each argument
         """

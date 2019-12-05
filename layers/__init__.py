@@ -4,13 +4,14 @@ from .networking_layer import NetworkingLayer, NetworkingLayerArgs
 from .transport_layer import TransportLayer, TransportLayerArgs
 from .application_layer import ApplicationLayer, ApplicationLayerArgs
 
-from .test_layer import TestLayer, TestLayerArgs
-
 def create_layers(simulation_mng, metric_mng, node_data, layer_classes, layer_args):
     """
     Create the layers specified by the arguments
 
     Arguments
+        simulation_mng - used to stop the simulation when a node goes offline
+        metric_mng - used to keep track of loss and delay
+        note_data - initialized node data including ID and battery life
         layer_classes - List of LayerBase classes, starting from the lowest layer
         layer_args - List of BaseLayerArg object, must correspond with the appropriate layer in layer_classes
 
