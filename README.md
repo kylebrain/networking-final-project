@@ -14,7 +14,7 @@ pip install numpy
 | max_connections | Maximum number of connections a node can have | [2, num_nodes) |
 | router_ratio | Percentage of routers in the network | [0.0, 1.0] |
 | buffer_size | Number of packets the link layer receive buffer can hold at a time | [0, inf) |
-| battery_weight | Higher the battery_weight, the more the path avoids low battery | [0.0, inf)] |
+| battery_weight | Higher the battery_weight, the more the path avoids low battery | [0.0, inf) |
 | beautify | Determines whether the simulation debugs readable information or csv formatted information | [0, 1] |
 
 ## Running
