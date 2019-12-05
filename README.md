@@ -19,5 +19,5 @@ pip install numpy
 
 ## Running
 ```bash
-python main.py <config file path>
+python main.py config.txt
 ```
