@@ -1,6 +1,0 @@
-num_nodes: 60
-max_connections: 8
-router_ratio: 0.8
-buffer_size: 30
-battery_weight: 0.5
-beautify: 0
