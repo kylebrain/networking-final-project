@@ -1,10 +1,13 @@
 # Distributed Load Routing
 Simulates a network and runs a networking protocol aimed to distribute packet load in order to distribute battery depletion.
 
-## Prerequisites
+## Installation
 ```bash
-pip install numpy
+pip install load-distibuted-routing
 ```
+
+## Package Link
+https://pypi.org/project/load-distributed-routing/
 
 ## Configuration File
 
@@ -19,5 +22,5 @@ pip install numpy
 
 ## Running
 ```bash
-python main.py config.txt
+ldr config.txt
 ```

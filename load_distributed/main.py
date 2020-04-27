@@ -1,10 +1,10 @@
-import layers
+import load_distributed.layers
 import time
-from node_manager import NodeManager
-from metric_manager import MetricManager
-from simulation_manager import SimulationManager
+from load_distributed.node_manager import NodeManager
+from load_distributed.metric_manager import MetricManager
+from load_distributed.simulation_manager import SimulationManager
 import numpy as np
-import packet
+import load_distributed.packet
 import sys
 import fileinput
 import re
@@ -14,7 +14,7 @@ from threading import Thread
 
 def main():
     if len(sys.argv) < 2:
-        print ("Improper running. (EX: python3 main.py config.txt)")
+        print ("Improper running. (EX: ldr config.txt)")
         return
 
     # Create the simulation arguments from the config file

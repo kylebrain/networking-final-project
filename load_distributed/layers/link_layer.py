@@ -1,4 +1,4 @@
-from layers.layer_base import LayerBase, BaseLayerArgs
+from load_distributed.layers.layer_base import LayerBase, BaseLayerArgs
 from queue import Queue
 import sys
 

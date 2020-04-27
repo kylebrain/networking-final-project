@@ -1,6 +1,6 @@
-from layers.layer_base import LayerBase, BaseLayerArgs
+from load_distributed.layers.layer_base import LayerBase, BaseLayerArgs
 from queue import Queue
-import packet
+import load_distributed.packet as packet
 import time
 from threading import Thread
 

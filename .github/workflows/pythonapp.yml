@@ -34,8 +34,4 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest tests/*
-    - name: Build with pyinstaller
-      run: |
-        pip install pyinstaller
-        pyinstaller main.py
+        pytest load_distributed/tests/*

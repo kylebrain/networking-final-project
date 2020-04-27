@@ -1,5 +1,5 @@
 import random
-import layers
+import load_distributed.layers as layers
 
 class NodeData():
     def __init__(self, id, network, nodes, numNodes):

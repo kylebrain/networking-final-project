@@ -1,9 +1,9 @@
-from layers.layer_base import LayerBase, BaseLayerArgs
+from load_distributed.layers.layer_base import LayerBase, BaseLayerArgs
 from queue import Queue
-from packet import LinkPacket, NetworkingPacket, Packet
+from load_distributed.packet import LinkPacket, NetworkingPacket, Packet
 from threading import Thread
+from load_distributed.djikstra import djikstra
 import time
-from djikstra import djikstra
 import random
 
 class NetworkingLayerArgs(BaseLayerArgs):

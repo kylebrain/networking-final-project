@@ -1,7 +1,7 @@
-from layers.layer_base import LayerBase, BaseLayerArgs
+from load_distributed.layers.layer_base import LayerBase, BaseLayerArgs
 from queue import Queue
 from random import seed, random
-import packet
+import load_distributed.packet as packet
 import time
 
 class ApplicationLayerArgs(BaseLayerArgs):
