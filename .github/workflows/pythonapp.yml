@@ -35,3 +35,12 @@ jobs:
       run: |
         pip install pytest
         pytest load_distributed/tests/*
+    - name: "Build a binary wheel and a source tarball"
+      run: |
+        pip install wheel
+        python setup.py bdist_wheel
+        python setup.py sdist
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.pypi_password }}
