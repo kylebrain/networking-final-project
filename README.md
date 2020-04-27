@@ -7,7 +7,7 @@ pip install load-distibuted-routing
 ```
 
 ## Package Link
-[Release](https://pypi.org/project/load-distributed-routing/)
+[Release](https://pypi.org/project/load-distributed-routing/)\
 [Development](https://test.pypi.org/project/load-distributed-routing/)
 
 ## Configuration File
