@@ -8,7 +8,7 @@ Simulates a network and runs a networking protocol aimed to distribute packet lo
 pip install load-distributed-routing
 ```
 
-## Package Link
+## Package Link PyPi
 [Release](https://pypi.org/project/load-distributed-routing/)\
 [Development](https://test.pypi.org/project/load-distributed-routing/)
 
