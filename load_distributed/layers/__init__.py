@@ -3,6 +3,7 @@ from .link_layer import LinkLayer, LinkLayerArgs
 from .networking_layer import NetworkingLayer, NetworkingLayerArgs
 from .transport_layer import TransportLayer, TransportLayerArgs
 from .application_layer import ApplicationLayer, ApplicationLayerArgs
+from .test_top_layer import TestTopLayer, TestTopLayerArgs
 
 def create_layers(simulation_mng, metric_mng, node_data, layer_classes, layer_args):
     """

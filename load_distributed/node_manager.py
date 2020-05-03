@@ -57,6 +57,10 @@ class NodeManager():
 
     def add_random_connections(self, added_nodes, src):
         potential_connections = self.get_potential_connections(added_nodes, src)
+
+        if len(potential_connections) == 0:
+            raise ValueError("node_manager add_random_connections cannot add connection if there are no valid connection open to be made")
+
         for node, connections in potential_connections.items():
             # Make connection if not already connected and random selection
             if not self.is_connected(src, node) and random.random() < self.sparcity:
