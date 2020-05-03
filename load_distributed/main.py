@@ -32,8 +32,8 @@ def main():
     app_layer_nodes = [i for i, node in enumerate(nodes) if len(node) == 4]
 
     if sim_args.beautify:
-        print("Simulation Running")
-        print(sim_args.__dict__)
+        print("Simulation Running", flush=True)
+        print(sim_args.__dict__, flush=True)
 
     start_time = time.time()
     request_period = 0.01
@@ -81,7 +81,7 @@ def make_request(nodes, src, dest, beautify):
     """
     data = nodes[src][3].get_data(dest)
     if beautify:
-        print("App layer (id = %d) get request found data: %.3f from node (id = %d)" % (src, data, dest))
+        print("App layer (id = %d) get request found data: %.3f from node (id = %d)" % (src, data, dest), flush=True)
 
 class SimulationArgs():
     """
