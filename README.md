@@ -5,7 +5,7 @@ Simulates a network and runs a networking protocol aimed to distribute packet lo
 
 ## Installation
 ```bash
-pip install load-distibuted-routing
+pip install load-distributed-routing
 ```
 
 ## Package Link
