@@ -1,5 +1,5 @@
 ![coverage](https://img.shields.io/codecov/c/github/kylebrain/networking-final-project)
-[![build](https://github.com/kylebrain/networking-final-project/workflows/pythonapp.yml/badge.svg)](https://github.com/kylebrain/networking-final-project/actions)
+[![build](https://github.com/kylebrain/networking-final-project/workflows/Python%20application/badge.svg)](https://github.com/kylebrain/networking-final-project/actions)
 # Distributed Load Routing
 Simulates a network and runs a networking protocol aimed to distribute packet load in order to distribute battery depletion.
 
