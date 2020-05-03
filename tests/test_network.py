@@ -17,18 +17,29 @@ class TestNetwork(unittest.TestCase):
         self.sim_args = netConfig(os.path.join(TEST_DIRECTORY, TEST_CONFIG))
         self.metric_manager = MetricManager()
         self.simulation_manager = SimulationManager()
-        self.nodeManager = None
+        self.nodeManager = NodeManager(self.sim_args, self.metric_manager, self.simulation_manager)
+        self.nodes = None
+        self.network = None 
 
 
     def setUp(self):
-        self.nodeManager = NodeManager(self.sim_args, self.metric_manager, self.simulation_manager)
+        self.nodes, self.network = self.nodeManager.CreateNetwork()
 
 
-    def test_create_network(self):
-        # Create the network
-        nodes, _ = self.nodeManager.CreateNetwork()
+    def test_create_num_nodes(self):
+        '''
+        Verifies the network is created with the correct number of nodes
+        '''
+        self.assertEqual(len(self.nodes), self.sim_args.num_nodes)
 
-        self.assertEqual(len(nodes), self.sim_args.num_nodes)
+
+    def test_create_max_connections(self):
+        '''
+        Verifies nodes have at maximum max_connections number of connections
+        '''
+        for node_connections in self.network:
+            connection_count = sum(connection != 0 for connection in node_connections)
+            self.assertLessEqual(connection_count, self.sim_args.max_connections)
 
 
 if __name__ == "__main__":

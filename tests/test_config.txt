@@ -1,4 +1,4 @@
-num_nodes: 50
+num_nodes: 20
 max_connections: 8
 router_ratio: 0.8
 buffer_size: 30
