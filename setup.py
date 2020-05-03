@@ -10,7 +10,7 @@ with open(os.path.join(HERE, "README.md")) as fid:
 
 setup(
     name="load-distributed-routing",
-    version="1.0.0",
+    version="1.0.1",
     license='MIT',
     description="Read the latest Real Python tutorials",
     long_description=README,
