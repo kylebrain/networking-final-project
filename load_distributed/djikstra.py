@@ -14,13 +14,13 @@ def djikstra(start, end, adjacency_matrix, battery_table, battery_weight):
     Q = list(range(0, numNodes))
     while Q:
         u = Q[0]
-        for i,element in enumerate(Q):
+        for element in Q:
             if dist[element] < dist[u]:
                 u = element
         Q.remove(u)
         if u is end:
             break
-        for i, neighbor in enumerate(Q):
+        for neighbor in Q:
             if adjacency_matrix[u][neighbor] == 0:
                 continue
             battery = battery_table[neighbor]
