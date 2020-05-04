@@ -1,18 +1,18 @@
 import unittest
-import time
 import load_distributed.layers as layers
 import load_distributed.packet as packet
 from network_factory import create_network
+from threading import Thread, Event
 
-class TestLinkLayer(unittest.TestCase):
+class TestNetworkingLayer(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.stack_class_list = [layers.LinkLayer, layers.TestTopLayer]
+        self.stack_class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TestTopLayer]
         self.TEST_LAYER = len(self.stack_class_list) - 1
 
         BUFFER_SIZE = 100
-        self.stack_args = [layers.LinkLayerArgs(BUFFER_SIZE), layers.TestTopLayerArgs()]
-
+        BATTERY_WEIGHT = 0.5
+        self.stack_args = [layers.LinkLayerArgs(BUFFER_SIZE), layers.NetworkingLayerArgs(BATTERY_WEIGHT), layers.TestTopLayerArgs()]
 
     def test_send(self):
         adjacency_matrix = [
@@ -23,11 +23,11 @@ class TestLinkLayer(unittest.TestCase):
         nodes = create_network(adjacency_matrix, self.stack_class_list, self.stack_args)
 
         pckt = packet.Packet()
-        pckt.link = packet.LinkPacket(0, 1)
+        pckt.network = packet.NetworkingPacket(0, 1)
         nodes[0][self.TEST_LAYER].send_buffer.put(pckt)
 
         resp = nodes[1][self.TEST_LAYER].get_response(timeout=1)
-        self.assertEqual(resp, pckt, "Link layer was not able to send packet")
+        self.assertEqual(resp, pckt, "Networking layer was not able to send packet")
 
 
     def test_send_no_connection(self):
@@ -39,12 +39,11 @@ class TestLinkLayer(unittest.TestCase):
         nodes = create_network(adjacency_matrix, self.stack_class_list, self.stack_args)
 
         pckt = packet.Packet()
-        pckt.link = packet.LinkPacket(0, 1)
-
+        pckt.network = packet.NetworkingPacket(0, 1)
         nodes[0][self.TEST_LAYER].send_buffer.put(pckt)
 
         resp = nodes[1][self.TEST_LAYER].get_response(timeout=1)
-        self.assertIsNone(resp, "Link layer was able to send across a disconnected link")
+        self.assertIsNone(resp, "Network layer was able to send across a disconnected link")
 
 
 if __name__ == "__main__":

@@ -37,6 +37,8 @@ class NetworkingLayer(LayerBase):
             self.broadcast(msg, ignore_list)
         else:
             path = djikstra(self.node_data.id, msg.network.dest_id, self.node_data.network, self.node_data.battery_table, self.args.battery_weight)
+            if len(path) == 0:
+                raise RuntimeError("Networking layer could not find a path to the destination")
             dest = path[1]
             msg.link = LinkPacket(self.node_data.id, dest)
             super(NetworkingLayer, self).process_send(msg)

@@ -30,7 +30,7 @@ class TestNetwork(unittest.TestCase):
         '''
         Verifies the network is created with the correct number of nodes
         '''
-        self.assertEqual(len(self.nodes), self.sim_args.num_nodes)
+        self.assertEqual(len(self.nodes), self.sim_args.num_nodes, "Network was created with the incorrect number of nodes")
 
 
     def test_create_max_connections(self):
@@ -39,7 +39,7 @@ class TestNetwork(unittest.TestCase):
         '''
         for node_connections in self.network:
             connection_count = sum(connection != 0 for connection in node_connections)
-            self.assertLessEqual(connection_count, self.sim_args.max_connections)
+            self.assertLessEqual(connection_count, self.sim_args.max_connections, "Node had more connections than the maximum")
 
 
 if __name__ == "__main__":
