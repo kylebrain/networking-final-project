@@ -15,7 +15,7 @@ class ApplicationLayer(LayerBase):
         super(ApplicationLayer, self).__init__(simulation_mng, metric_mng, node_data, layer_id, args)
         self.host_buffer = []
 
-    def get_data(self, dest):
+    def get_data(self, dest, timeout=None):
         """
         Sends a data request to the dest node
         Waits until a response is received from the dest node
@@ -23,8 +23,12 @@ class ApplicationLayer(LayerBase):
         pckt = packet.Packet()
         pckt.app = packet.AppPacket(self.node_data.id, dest, 0, 0)
         self.send_buffer.put(pckt)
+
+        start = time.time()
         while not self.has_response(dest):
-            pass
+            if timeout is not None and time.time() >= start + timeout:
+                return None
+
         return_msg = next(msg for msg in self.host_buffer)
         self.host_buffer.remove(return_msg)
         return return_msg.app.msg

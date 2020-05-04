@@ -4,7 +4,7 @@ import load_distributed.layers as layers
 import load_distributed.packet as packet
 from network_factory import create_network, TIMEOUT
 
-class TestNetworkingLayer(unittest.TestCase):
+class TestTransportLayer(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.stack_class_list = [layers.LinkLayer, layers.NetworkingLayer, layers.TransportLayer, layers.TestTopLayer]
@@ -14,6 +14,7 @@ class TestNetworkingLayer(unittest.TestCase):
         BATTERY_WEIGHT = 0.5
         self.RETRANSMISSION_DELAY = 1
         self.stack_args = [layers.LinkLayerArgs(BUFFER_SIZE), layers.NetworkingLayerArgs(BATTERY_WEIGHT), layers.TransportLayerArgs(self.RETRANSMISSION_DELAY), layers.TestTopLayerArgs()]
+
 
     def test_send(self):
         adjacency_matrix = [
@@ -33,10 +34,10 @@ class TestNetworkingLayer(unittest.TestCase):
         time.sleep(TIMEOUT)
 
         # Transport layer has sent packet
-        self.assertEqual(nodes[0][self.TEST_LAYER - 1].current_seq, 1)
+        self.assertEqual(nodes[0][self.TEST_LAYER - 1].current_seq, 1, "TCP sequence number not incremented after sending TCP packet")
 
         # ACK has been received and removed from ack buffer
-        self.assertEqual(len(nodes[0][self.TEST_LAYER - 1].ack_buffer), 0)
+        self.assertEqual(len(nodes[0][self.TEST_LAYER - 1].ack_buffer), 0, "TCP still waiting on TCP packet ACK")
 
 
 if __name__ == "__main__":
