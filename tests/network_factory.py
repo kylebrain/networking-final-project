@@ -3,6 +3,8 @@ from load_distributed.metric_manager import MetricManager
 from load_distributed.node_manager import NodeData
 import load_distributed.layers as layers
 
+TIMEOUT = 0.5
+
 def create_network(adjacency_matrix, stack_class_list, stack_args, simulation_mng = SimulationManager(), metric_mng = MetricManager()):
     nodes = []
     num_nodes = len(adjacency_matrix)

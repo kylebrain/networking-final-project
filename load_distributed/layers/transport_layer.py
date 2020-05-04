@@ -5,7 +5,8 @@ import time
 from threading import Thread
 
 class TransportLayerArgs(BaseLayerArgs):
-    pass
+    def __init__(self, wait_time):
+        self.wait_time = wait_time
 
 class TransportLayer(LayerBase):
     """
@@ -16,7 +17,6 @@ class TransportLayer(LayerBase):
         super(TransportLayer, self).__init__(simulation_mng, metric_mng, node_data, layer_id, args)
         self.ack_buffer = []
         self.current_seq = 0
-        self.wait_time = 10
 
     def process_send(self, msg):
         """
@@ -27,7 +27,7 @@ class TransportLayer(LayerBase):
             msg.transport.seq_num = self.current_seq
             self.current_seq += 1
             msg.network = packet.NetworkingPacket(self.node_data.id, msg.app.dest_id)
-            retransmit_thread = Thread(target=self.retransmit, args=(msg, self.wait_time))
+            retransmit_thread = Thread(target=self.retransmit, args=(msg, self.args.wait_time))
             retransmit_thread.daemon = True
             retransmit_thread.start()
             self.ack_buffer.append(packet.Packet.from_copy(msg))

@@ -28,7 +28,7 @@ class NodeManager():
 
         # Set up common arguments for each layer
         self.ROUTER_ARGS = [layers.LinkLayerArgs(self.buffer_size), layers.NetworkingLayerArgs(self.battery_weight)]
-        top_layer_args = [layers.TransportLayerArgs(), layers.ApplicationLayerArgs()]
+        top_layer_args = [layers.TransportLayerArgs(sim_args.retransmission_delay), layers.ApplicationLayerArgs()]
 
         # Set up the class lists for routers and sensors
         self.ROUTER_CLASS_LIST = [layers.LinkLayer, layers.NetworkingLayer]

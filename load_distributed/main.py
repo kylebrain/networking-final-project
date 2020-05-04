@@ -26,7 +26,7 @@ def main():
     nodeManager = NodeManager(sim_args, metric_manager, simulation_manager)
 
     # Create the network
-    nodes, network = nodeManager.CreateNetwork()
+    nodes, _ = nodeManager.CreateNetwork()
 
     # Get all of the application layer (sensors) IDs
     app_layer_nodes = [i for i, node in enumerate(nodes) if len(node) == 4]
@@ -92,6 +92,7 @@ class SimulationArgs():
     router_ratio - percentage of routers in the network
     buffer_size - number of packets the link layer receive buffer can hold at a time
     battery_weight - higher the battery_weight, the more the path avoids low battery
+    retransmission_delay - number of seconds TCP waits before retransmission
     beautify - determines whether the simulation debugs readable information or csv formatted information
     """
     def __init__(self):
@@ -101,6 +102,7 @@ class SimulationArgs():
         self.router_ratio = 0.0
         self.buffer_size = 0
         self.battery_weight = 0.0
+        self.retransmission_delay = 0.0
         self.beautify = False
 
 def netConfig(path):
@@ -113,22 +115,25 @@ def netConfig(path):
         info = fp.readlines()
         for i in info:
             if "num_nodes" in i:
-                d = re.findall("\d+", i)
+                d = re.findall(r"\d+", i)
                 ret.num_nodes = int(d[0])
             elif "max_connections" in i:
-                d = re.findall("\d+", i)
+                d = re.findall(r"\d+", i)
                 ret.max_connections = int(d[0])
             elif "router_ratio" in i:
-                d = re.findall("\d+\.\d+", i)
+                d = re.findall(r"\d+\.\d+", i)
                 ret.router_ratio = float(d[0])
             elif "buffer_size" in i:
-                d = re.findall("\d+", i)
+                d = re.findall(r"\d+", i)
                 ret.buffer_size = int(d[0])
             elif "battery_weight" in i:
-                d = re.findall("\d+\.\d+", i)
+                d = re.findall(r"\d+\.\d+", i)
                 ret.battery_weight = float(d[0])
+            elif "retransmission_delay" in i:
+                d = re.findall(r"\d+\.\d+", i)
+                ret.retransmission_delay = float(d[0])
             elif "beautify" in i:
-                d = re.findall("\d+", i)
+                d = re.findall(r"\d+", i)
                 ret.beautify = bool(int(d[0]))
     ret.sparcity = float(ret.max_connections) / ret.num_nodes
     return ret

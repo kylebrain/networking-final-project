@@ -1,8 +1,7 @@
 import unittest
 import load_distributed.layers as layers
 import load_distributed.packet as packet
-from network_factory import create_network
-from threading import Thread, Event
+from network_factory import create_network, TIMEOUT
 
 class TestNetworkingLayer(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -26,7 +25,7 @@ class TestNetworkingLayer(unittest.TestCase):
         pckt.network = packet.NetworkingPacket(0, 1)
         nodes[0][self.TEST_LAYER].send_buffer.put(pckt)
 
-        resp = nodes[1][self.TEST_LAYER].get_response(timeout=1)
+        resp = nodes[1][self.TEST_LAYER].get_response(timeout=TIMEOUT)
         self.assertEqual(resp, pckt, "Networking layer was not able to send packet")
 
 
@@ -42,7 +41,7 @@ class TestNetworkingLayer(unittest.TestCase):
         pckt.network = packet.NetworkingPacket(0, 1)
         nodes[0][self.TEST_LAYER].send_buffer.put(pckt)
 
-        resp = nodes[1][self.TEST_LAYER].get_response(timeout=1)
+        resp = nodes[1][self.TEST_LAYER].get_response(timeout=TIMEOUT)
         self.assertIsNone(resp, "Network layer was able to send across a disconnected link")
 
 
